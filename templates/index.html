@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>IndecisiveFattie 🍔</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: #fff8f0;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      padding: 2rem;
+    }
+    .container { width: 100%; max-width: 640px; }
+    .card {
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+      padding: 2.5rem;
+      margin-bottom: 1.5rem;
+    }
+    h1 { font-size: 1.8rem; color: #e85d04; margin-bottom: 0.25rem; }
+    .subtitle { color: #888; font-size: 0.95rem; margin-bottom: 2rem; }
+    .mode-toggle { display: flex; gap: 0.5rem; margin-bottom: 1.5rem; }
+    .mode-btn {
+      flex: 1;
+      padding: 0.6rem;
+      border: 1.5px solid #e0e0e0;
+      border-radius: 8px;
+      background: white;
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      color: #888;
+      transition: all 0.15s;
+    }
+    .mode-btn.active { border-color: #e85d04; color: #e85d04; background: #fff3eb; }
+    label { display: block; font-weight: 600; margin-bottom: 0.4rem; color: #333; }
+    input, textarea {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      border: 1.5px solid #e0e0e0;
+      border-radius: 8px;
+      font-size: 1rem;
+      margin-bottom: 1.25rem;
+      transition: border-color 0.2s;
+      font-family: inherit;
+    }
+    input:focus, textarea:focus { outline: none; border-color: #e85d04; }
+    textarea { resize: vertical; min-height: 80px; }
+    button {
+      width: 100%;
+      padding: 0.85rem;
+      background: #e85d04;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    button:hover:not(:disabled) { background: #c94e00; }
+    button:disabled { background: #f4a97a; cursor: not-allowed; }
+
+    #loading {
+      display: none;
+      text-align: center;
+      padding: 2rem;
+      color: #888;
+    }
+    .spinner {
+      width: 32px; height: 32px;
+      border: 3px solid #f0e0d6;
+      border-top-color: #e85d04;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin: 0 auto 0.5rem;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    #pick-card {
+      display: none;
+      background: #fff3eb;
+      border-left: 4px solid #e85d04;
+      border-radius: 8px;
+      padding: 1.25rem 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+    #pick-card .pick-label { font-size: 0.8rem; color: #e85d04; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.3rem; }
+    #pick-card .pick-name { font-size: 1.3rem; font-weight: 700; color: #333; margin-bottom: 0.5rem; }
+    #pick-card .pick-reason { color: #555; line-height: 1.6; font-size: 0.95rem; }
+    .pick-footer { margin-top: 1rem; position: relative; display: inline-block; }
+    .directions-btn {
+      padding: 0.45rem 1rem;
+      background: #e85d04;
+      color: white;
+      border: none;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .directions-btn:hover { background: #c94e00; }
+    .map-dropdown {
+      display: none;
+      position: absolute;
+      top: calc(100% + 6px);
+      left: 0;
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+      overflow: hidden;
+      z-index: 10;
+      min-width: 160px;
+    }
+    .map-dropdown.open { display: block; }
+    .map-dropdown a {
+      display: block;
+      padding: 0.65rem 1rem;
+      font-size: 0.9rem;
+      color: #333;
+      text-decoration: none;
+      font-weight: 500;
+    }
+    .map-dropdown a:hover { background: #fff3eb; color: #e85d04; }
+
+    #restaurant-list { display: none; }
+    #restaurant-list h2 { font-size: 1rem; color: #888; font-weight: 600; margin-bottom: 0.75rem; }
+    .sort-bar { display: flex; gap: 0.5rem; margin-bottom: 1rem; }
+    .sort-btn {
+      padding: 0.35rem 0.85rem;
+      border: 1.5px solid #e0e0e0;
+      border-radius: 20px;
+      background: white;
+      font-size: 0.82rem;
+      font-weight: 600;
+      cursor: pointer;
+      color: #555;
+      transition: all 0.15s;
+    }
+    .sort-btn:hover { border-color: #e85d04; color: #e85d04; }
+    .sort-btn.active { background: #e85d04; border-color: #e85d04; color: white; }
+
+    .restaurant-item {
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+      padding: 1rem 1.25rem;
+      margin-bottom: 0.75rem;
+      border: 1.5px solid transparent;
+      transition: border-color 0.2s;
+    }
+    .restaurant-item.is-pick { border-color: #e85d04; }
+    .restaurant-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.3rem; }
+    .restaurant-name { font-weight: 700; color: #222; font-size: 1rem; }
+    .restaurant-badges { display: flex; gap: 0.4rem; align-items: center; flex-shrink: 0; }
+    .badge {
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 0.2rem 0.5rem;
+      border-radius: 20px;
+    }
+    .badge-price { background: #e8f5e9; color: #2e7d32; }
+    .badge-rating { background: #fff8e1; color: #f57f17; }
+    .restaurant-cuisine { font-size: 0.82rem; color: #e85d04; font-weight: 600; margin-bottom: 0.3rem; text-transform: capitalize; }
+    .restaurant-desc { font-size: 0.88rem; color: #666; line-height: 1.5; }
+    .restaurant-links { margin-top: 0.5rem; display: flex; gap: 0.5rem; }
+    .restaurant-links a {
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: #e85d04;
+      text-decoration: none;
+      padding: 0.2rem 0.6rem;
+      border: 1.5px solid #e85d04;
+      border-radius: 20px;
+    }
+    .restaurant-links a:hover { background: #fff3eb; }
+
+    .city-cards { display: flex; gap: 0.75rem; margin-bottom: 1.5rem; }
+    .city-card {
+      flex: 1;
+      padding: 0.85rem 0.5rem;
+      border: 1.5px solid #e0e0e0;
+      border-radius: 12px;
+      background: white;
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.15s;
+      font-family: inherit;
+    }
+    .city-card:hover { border-color: #e85d04; }
+    .city-card.active { border-color: #e85d04; background: #fff3eb; }
+    .city-card .city-emoji { font-size: 1.5rem; display: block; margin-bottom: 0.25rem; }
+    #error {
+      display: none;
+      padding: 1rem 1.25rem;
+      background: #fff0f0;
+      border-left: 4px solid #e53e3e;
+      border-radius: 8px;
+      color: #c53030;
+      font-size: 0.95rem;
+      margin-top: 1rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="card">
+      <h1>IndecisiveFattie 🍔</h1>
+      <p class="subtitle">Stop overthinking. Let us pick your next meal.</p>
+
+      <div class="mode-toggle">
+        <button type="button" class="mode-btn active" data-mode="food">🍽️ Food</button>
+        <button type="button" class="mode-btn" data-mode="drinks">☕ Drinks</button>
+      </div>
+
+      <form id="form">
+        <label>Pick your city</label>
+        <div class="city-cards">
+          <button type="button" class="city-card active" data-city="Los Angeles">
+            <span class="city-emoji">🌴</span>
+            <span class="city-name">Los Angeles</span>
+          </button>
+          <button type="button" class="city-card" data-city="Chicago">
+            <span class="city-emoji">🌬️</span>
+            <span class="city-name">Chicago</span>
+          </button>
+          <button type="button" class="city-card" data-city="New York City">
+            <span class="city-emoji">🗽</span>
+            <span class="city-name">New York City</span>
+          </button>
+        </div>
+
+        <label for="preferences">What are you feeling?</label>
+        <textarea id="preferences" placeholder="e.g. Something spicy, not too expensive, preferably Asian food" required></textarea>
+
+        <button type="submit" id="btn">Find my spot 🍽️</button>
+      </form>
+
+      <div id="error"></div>
+    </div>
+
+    <div id="loading">
+      <div class="spinner"></div>
+      <p>Searching nearby restaurants…</p>
+    </div>
+
+    <div id="pick-card">
+      <div class="pick-label">🎯 Our pick for you</div>
+      <div class="pick-name" id="pick-name"></div>
+      <div class="pick-reason" id="pick-reason"></div>
+      <div class="pick-footer">
+        <button class="directions-btn" onclick="toggleMapDropdown()">📍 Directions</button>
+        <div class="map-dropdown" id="map-dropdown">
+          <a id="gmaps-link" href="#" target="_blank">🗺 Google Maps</a>
+          <a id="amaps-link" href="#" target="_blank">🍎 Apple Maps</a>
+        </div>
+      </div>
+    </div>
+
+    <div id="restaurant-list">
+      <h2 id="list-heading"></h2>
+      <div class="sort-bar">
+        <button class="sort-btn active" onclick="sortList('default')">🎯 Best match</button>
+        <button class="sort-btn" onclick="sortList('rating')">⭐ Rating</button>
+        <button class="sort-btn" onclick="sortList('price-asc')">$ Price: Low</button>
+        <button class="sort-btn" onclick="sortList('price-desc')">$$$ Price: High</button>
+      </div>
+      <div id="list-items"></div>
+    </div>
+  </div>
+
+  <script>
+    const form = document.getElementById("form");
+    const btn = document.getElementById("btn");
+    const loading = document.getElementById("loading");
+    const pickCard = document.getElementById("pick-card");
+    const restaurantList = document.getElementById("restaurant-list");
+    const error = document.getElementById("error");
+
+    let allRestaurants = [];
+    let pickName = "";
+    let currentMode = "food";
+    let selectedCity = "Los Angeles";
+
+    document.querySelectorAll(".city-card").forEach(card => {
+      card.addEventListener("click", () => {
+        document.querySelectorAll(".city-card").forEach(c => c.classList.remove("active"));
+        card.classList.add("active");
+        selectedCity = card.dataset.city;
+      });
+    });
+
+    function toggleMapDropdown() {
+      document.getElementById("map-dropdown").classList.toggle("open");
+    }
+    // close dropdown when clicking outside
+    document.addEventListener("click", (e) => {
+      if (!e.target.closest(".pick-footer")) {
+        document.getElementById("map-dropdown").classList.remove("open");
+      }
+    });
+    const preferencesEl = document.getElementById("preferences");
+    const submitBtn = document.getElementById("btn");
+
+    const modePlaceholders = {
+      food: "e.g. Something spicy, not too expensive, preferably Asian food",
+      drinks: "e.g. A cozy place for matcha or bubble tea",
+    };
+    const modeEmoji = { food: "🍽️", drinks: "☕" };
+
+    document.querySelectorAll(".mode-btn").forEach(btn => {
+      btn.addEventListener("click", () => {
+        document.querySelectorAll(".mode-btn").forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+        currentMode = btn.dataset.mode;
+        preferencesEl.placeholder = modePlaceholders[currentMode];
+        submitBtn.textContent = `Find my spot ${modeEmoji[currentMode]}`;
+      });
+    });
+
+    function renderList(restaurants) {
+      const container = document.getElementById("list-items");
+      container.innerHTML = "";
+      restaurants.forEach(r => {
+        const isPick = r.name === pickName;
+        const div = document.createElement("div");
+        div.className = "restaurant-item" + (isPick ? " is-pick" : "");
+        const q = encodeURIComponent(r.name + " " + selectedCity);
+        div.innerHTML = `
+          <div class="restaurant-header">
+            <div class="restaurant-name">${r.name}${isPick ? " 🎯" : ""}</div>
+            <div class="restaurant-badges">
+              <span class="badge badge-rating">⭐ ${r.rating}</span>
+              <span class="badge badge-price">${r.affordability}</span>
+            </div>
+          </div>
+          <div class="restaurant-cuisine">${r.cuisine}</div>
+          <div class="restaurant-desc">${r.description}</div>
+          <div class="restaurant-links">
+            <a href="https://www.google.com/maps/search/?api=1&query=${q}" target="_blank">🗺 Google Maps</a>
+            <a href="https://maps.apple.com/?q=${q}" target="_blank">🍎 Apple Maps</a>
+          </div>
+        `;
+        container.appendChild(div);
+      });
+    }
+
+    const priceOrder = { "$": 1, "$$": 2, "$$$": 3, "$$$$": 4 };
+
+    function sortList(mode) {
+      document.querySelectorAll(".sort-btn").forEach(b => b.classList.remove("active"));
+      event.target.classList.add("active");
+
+      let sorted = [...allRestaurants];
+      if (mode === "rating") {
+        sorted.sort((a, b) => b.rating - a.rating);
+      } else if (mode === "price-asc") {
+        sorted.sort((a, b) => (priceOrder[a.affordability] || 2) - (priceOrder[b.affordability] || 2));
+      } else if (mode === "price-desc") {
+        sorted.sort((a, b) => (priceOrder[b.affordability] || 2) - (priceOrder[a.affordability] || 2));
+      }
+      // "default" keeps original order
+      renderList(sorted);
+    }
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const location = selectedCity;
+      const preferences = document.getElementById("preferences").value.trim();
+
+      // reset
+      pickCard.style.display = "none";
+      restaurantList.style.display = "none";
+      error.style.display = "none";
+      loading.style.display = "block";
+      btn.disabled = true;
+
+      try {
+        const resp = await fetch("/recommend", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ location, preferences, mode: currentMode }),
+        });
+        const data = await resp.json();
+
+        if (!resp.ok) {
+          error.textContent = data.error || "Something went wrong.";
+          error.style.display = "block";
+        } else {
+          // Show pick
+          pickName = data.pick;
+          document.getElementById("pick-name").textContent = data.pick;
+          document.getElementById("pick-reason").textContent = data.reason;
+          // Set map links using returned coordinates
+          const q = encodeURIComponent(data.pick + " " + data.location);
+          document.getElementById("gmaps-link").href =
+            `https://www.google.com/maps/search/?api=1&query=${q}`;
+          document.getElementById("amaps-link").href =
+            `https://maps.apple.com/?q=${q}`;
+          document.getElementById("map-dropdown").classList.remove("open");
+          pickCard.style.display = "block";
+
+          // Show restaurant list
+          document.getElementById("list-heading").textContent =
+            `${data.restaurant_count} restaurants near "${data.location}"`;
+
+          allRestaurants = data.restaurants || [];
+          // reset sort to default
+          document.querySelectorAll(".sort-btn").forEach((b, i) => b.classList.toggle("active", i === 0));
+          renderList(allRestaurants);
+          restaurantList.style.display = "block";
+        }
+      } catch (err) {
+        error.textContent = "Network error. Please try again.";
+        error.style.display = "block";
+      } finally {
+        loading.style.display = "none";
+        btn.disabled = false;
+      }
+    });
+  </script>
+</body>
+</html>

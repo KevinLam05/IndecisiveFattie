@@ -1,0 +1,62 @@
+[
+  {
+    "id": 1,
+    "city": "New York City",
+    "preference": "I want pizza",
+    "expected_cuisine_keywords": ["pizza", "italian"]
+  },
+  {
+    "id": 2,
+    "city": "Chicago",
+    "preference": "cheap tacos or Mexican food",
+    "expected_cuisine_keywords": ["mexican", "taco"]
+  },
+  {
+    "id": 3,
+    "city": "Los Angeles",
+    "preference": "spicy Thai food",
+    "expected_cuisine_keywords": ["thai"]
+  },
+  {
+    "id": 4,
+    "city": "New York City",
+    "preference": "sushi or Japanese food",
+    "expected_cuisine_keywords": ["sushi", "japanese"]
+  },
+  {
+    "id": 5,
+    "city": "Chicago",
+    "preference": "Indian food for dinner",
+    "expected_cuisine_keywords": ["indian"]
+  },
+  {
+    "id": 6,
+    "city": "Los Angeles",
+    "preference": "Korean BBQ",
+    "expected_cuisine_keywords": ["korean", "barbeque", "bbq"]
+  },
+  {
+    "id": 7,
+    "city": "New York City",
+    "preference": "something Chinese",
+    "expected_cuisine_keywords": ["chinese"]
+  },
+  {
+    "id": 8,
+    "city": "Los Angeles",
+    "preference": "a good burger place",
+    "expected_cuisine_keywords": ["burger", "american"]
+  },
+  {
+    "id": 9,
+    "city": "Chicago",
+    "preference": "Italian pasta or pizza",
+    "expected_cuisine_keywords": ["italian", "pizza"]
+  },
+  {
+    "id": 10,
+    "city": "Los Angeles",
+    "preference": "fresh sushi",
+    "expected_cuisine_keywords": ["sushi", "japanese"]
+  }
+]

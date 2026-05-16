@@ -1,0 +1,61 @@
+CPSC 254 Final Project: AI-Powered Web App
+This is your capstone for CPSC 254. Design, build, and evaluate an AI-powered web app of your own choosing, ship it to a public GitHub repository, and use the OpenAI API to do it. Kiro (or another AI coding assistant) is encouraged, but the code is yours, and you'll defend it in the written walkthrough and AI disclosure.
+
+The final project is worth 25% of your final course grade. The proposal worksheet and peer review are worth a combined 10 points and will take the place of Quiz 6.
+
+The assignment
+Build an AI-powered web app that you'd be proud to put on your portfolio. You choose the domain, what it does, and who it's for.
+
+It must use an LLM in a way that goes beyond Project 4's "text in → structured output once" pattern. Examples of acceptable projects include but are not limited to: retrieval over a corpus you curate, generation with quality controls, multi-turn conversation, function calling, multi-modal input, or another pattern you can defend. You'll measure how well your app's AI behavior works on examples you define, iterate on it, and ship something that runs locally from a README.md with clearly documented setup and run commands.
+
+Timeline
+Date	Milestone
+Mon May 4	 Assignment released.
+Wed May 6, class start	 Proposal worksheet due via Canvas (7 pts of quiz grade).
+Wed May 6, in class	 Peer review activity (3 pts of quiz grade).
+Wed May 6, end of day	 Proposals approved with revisions on Canvas.
+Fri May 15	 Final project due. Submit GitHub repo URL via Canvas.
+What to deliver
+Submit a public GitHub repository URL via Canvas. The repo must contain:
+
+A web app with a UI: form, loading state, output, error handling. Not a CLI, not a native app. A website.
+All source code, plus requirements.txt (or package.json) with pinned dependencies and a .env.example containing only OPENAI_API_KEY.
+README.md: what the app does plus setup and run instructions a fresh grader can follow exactly, with example invocations where helpful. Multiple commands are fine if they're unambiguous and in order.
+eval/ directory: your eval script and ≥10 labeled test cases (input + expected output or score) that measure your AI behavior with your chosen metric.
+REPORT.md: four sections, in order. Total length ~800–1200 words.
+What & why (~200–250 words). What the app does, who it's for, and what's hard about getting the AI behavior right.
+Iterations (≥3 versions, ~75–150 words each). One labeled subsection per version (V1, V2, V3, …). Each subsection must contain, in this order:
+Change: what you changed (prompt, model, retrieval, controls, etc.).
+Motivating example: the specific failing case from your eval set that drove the change.
+Delta: metric before → after on the same eval set (positive or negative — both are fine if explained).
+Conclusion: why the metric moved (or didn't), and what you'd try next.
+Code walkthrough (200–300 words). Trace one user action through your code with file:line references. Explain one design decision and one alternative you considered and rejected. Generic "this calls the API" descriptions don't earn full credit.
+AI disclosure & safety (~150–250 words). How you used your AI coding assistant (Kiro or otherwise), including 2–3 specific moments it failed and how you recovered. Then 2–3 sentences naming one safety risk specific to your app and the mitigation or accepted limit you chose. Common candidates: prompt injection, hallucination harm, PII exposure, biased output, cost runaway.
+Rubric (100 pts)
+#	Category	Pts	Full credit means…
+1	Concept & scope	5	Submission matches the concept and scope approved in the proposal. Silent drift is penalized; course-corrections you flag in REPORT.md are not.
+2	AI behavior depth	20	Goes meaningfully beyond Project 4's pattern, and you can articulate why a simpler approach wouldn't work.
+3	Quality measurement	15	Self-defined metric is appropriate, ≥10 test cases, honest reporting including failures.
+4	Iteration discipline	15	Methodology only; the writing is graded in row 8. ≥3 versions grounded in specific failing examples, each with a measured delta. You actually ran the eval before and after, the failing example actually motivated the change, and the Conclusion explains why the metric moved (or didn't) and what you'd try next. Unexplained regressions are penalized.
+5	App works end-to-end	15	Fresh clone → README commands followed in order → app runs. Happy path works, common errors don't crash it.
+6	UI/UX	5	Form/inputs, loading, output, errors, basic styling.
+7	Code & docs	5	Organized code, no secrets committed, README is complete and accurate.
+8	REPORT.md	20	5 pts per part. Part 1 (What & why): honestly names what's hard about your AI behavior. Part 2 (Iterations): Each version uses the Change / Motivating example / Delta / Conclusion structure, sections are clearly labeled, and the prose is specific rather than generic ("switched to gpt-4o-mini and accuracy dropped from 0.8 to 0.6 because…" beats "tried a different model"). Part 3 (Code walkthrough): names file and line, explains what each step does and why it's structured that way, and defends one rejected alternative. Part 4 (AI disclosure & safety): includes 2–3 specific AI-assistant failures and recoveries, and identifies a real safety risk for your app — generic "the LLM might hallucinate" doesn't earn the points.
+Grader environment
+Your code will be graded on:
+
+macOS
+Python 3.11+ (if Python) or Node 20+ (if Node)
+Fresh git clone of your repo
+Your README.md's instructions, followed exactly, in order
+A grader-supplied .env containing only OPENAI_API_KEY
+Required keys policy. The grader supplies OPENAI_API_KEY and nothing else. If your app needs any other API key to start (Pinecone, Weaviate Cloud, LangSmith, Supabase, Twilio, etc.), the grader can't run it. Pick a stack that stays inside this constraint:
+
+For RAG / vector search, use a local vector store (e.g., Chroma in embedded mode or FAISS) — anything that lives on disk in your repo.
+For other services, prefer libraries that run locally, like SQLite over hosted Postgres or local files over S3.
+The OpenAI API is the one exception.
+The grader will not debug your setup. If your app does not start or the main feature does not work after following your README, you receive 0 in "App works end-to-end" and 0 in "UI/UX", a 20-point penalty.
+
+Test your README on a clean directory before submitting. Clone your repo into a fresh folder, follow your own instructions exactly, and confirm the app runs with a brand-new .env.
+
+Questions? Office hours and email work. Don't wait until May 14th. Good luck!

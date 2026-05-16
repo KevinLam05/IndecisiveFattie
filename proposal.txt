@@ -1,0 +1,11 @@
+## One Sentence Pitch:
+IndecisiveFattie: counter your indecisiveness when it comes to food with this program to help you pick a restaurant of your choices or nearby restaurants with rating and reviews
+
+## who would be the users:
+To myself and to every foodies who genuinely get exhausted and lazy to pick a restaurant to enjoy
+
+## what does it do:
+Take data from nearby restaurant and filter it out according to preferences. And also to sort out rating and reviews in order to pique the user's interests
+
+eval metric:
+(# recommendations with names AND accurate ratings for each) / #total user inputs
