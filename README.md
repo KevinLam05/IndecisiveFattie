@@ -6,8 +6,8 @@ Stop overthinking your next meal. Pick a city, describe what you're craving, and
 
 1. Clone the repo and enter the directory:
    ```
-   git clone <repo-url>
-   cd final
+   git clone https://github.com/KevinLam05/IndecisiveFattie.git
+   cd IndecisiveFattie
    ```
 
 2. Create a virtual environment and install dependencies:
